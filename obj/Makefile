@@ -2,7 +2,7 @@ CC = g++
 OBJ = $(wildcard *.o)
 EXE = $(patsubst %.x, ../%.x, $(wildcard *.x))
 TST = $(wildcard %.tst.o)
-LIBS = -ltorch -lcaffe2 -lc10# -lonnxifi -lfoxi -lcaffe2_detectron_ops
+LIBS = -lpthread -ltorch -lcaffe2 -lc10# -lonnxifi -lfoxi -lcaffe2_detectron_ops
 #LIBS += -lcaffe2_module_test_dynamic -lc10d -lTHD -lnnpack -lprotoc -lprotobuf
 LFLAG = -L/home/zeta/Programming/libtorch/lib
 
@@ -10,6 +10,7 @@ all : $(EXE) ../catch.x
 
 ../%.x : %.x $(OBJ)
 	$(CC) -o $@ $^ $(LIBS) $(LFLAG)
+	patchelf --set-rpath /home/zeta/Programming/libtorch/lib $@
 
 ../catch.x : catch.tx $(OBJ) $(TST)
 	$(CC) -o $@ $^ $(LIBS) $(LFLAG)
