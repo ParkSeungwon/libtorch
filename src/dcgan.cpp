@@ -3,27 +3,42 @@ using namespace std;
 
 class Net : public torch::nn::Module {
 public:
-	Net(int64_t N, int64_t M)
-		: W{register_module("Linear", torch::nn::Linear(N, M))}
-		, b{register_parameter("bias", torch::randn(M))}
-	{ }
+	Net(initializer_list<int> li) {
+		int prev = -1;
+		int i = 0;
+		for(int k : li) {
+			if(prev >= 0) 
+				v.emplace_back(register_module("linear" + to_string(++i),
+							torch::nn::Linear{prev, k}));
+			prev = k;
+		}
+	}
 	torch::Tensor forward(torch::Tensor input) {
-		return W(input) + b;
+		for(auto &a : v) input = torch::relu(a->forward(input));
+		return input;
 	}
 
-protected:
-	torch::nn::Linear W;
-	torch::Tensor b;
+	vector<torch::nn::Linear> v;
 };
 
 int main() {
-	Net net(4, 5);
+	Net net{4, 5, 5, 2};
 	for (const auto& pair : net.named_parameters()) {
 		cout << pair.key() << " :\n" << pair.value() << "\n\n";
 	}
 
-	auto tensor = torch::eye(3);
-	cout << tensor << endl;
-	cout << net.forward(torch::ones({2,4})) << endl;
+	torch::Tensor in = torch::rand({1,4});
+	auto out = net.forward(in);
+	//torch::Tensor target = torch::rand({1,2});
+	torch::optim::SGD optimizer{net.parameters(), 0.01};
+	optimizer.zero_grad();
+	auto loss = torch::nll_loss(out, out);
+	loss.backward();
+	optimizer.step();
+//	cout << net.v[0]->grad() << endl;
+//	cout << in.grad() << endl << out << endl;
+	torch::serialize::OutputArchive output_archive;
+	net.save(output_archive);
+	output_archive.save_to("net2.pt");
 }
 
