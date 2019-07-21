@@ -41,3 +41,7 @@ generator-checkpoint.pt
 generator-optimizer-checkpoint.pt
 obj/catch.tx
 discriminator-optimizer-checkpoint.pt
+generator-checkpoint.pt
+generator-optimizer-checkpoint.pt
+obj/catch.tx
+discriminator-optimizer-checkpoint.pt
