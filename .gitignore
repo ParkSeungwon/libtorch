@@ -37,3 +37,7 @@ find
 .
 -size
 +3M
+generator-checkpoint.pt
+generator-optimizer-checkpoint.pt
+obj/catch.tx
+discriminator-optimizer-checkpoint.pt
