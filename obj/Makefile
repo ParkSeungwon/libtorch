@@ -4,13 +4,13 @@ EXE = $(patsubst %.x, ../%.x, $(wildcard *.x))
 TST = $(wildcard %.tst.o)
 LIBS = -lpthread -ltorch -lcaffe2 -lc10# -lonnxifi -lfoxi -lcaffe2_detectron_ops
 #LIBS += -lcaffe2_module_test_dynamic -lc10d -lTHD -lnnpack -lprotoc -lprotobuf
-LFLAG = -L/home/zeta/Programming/libtorch/lib
+LFLAG = -L/home/zeta/Cloned/libtorch/lib
 
 all : $(EXE) ../catch.x
 
 ../%.x : %.x $(OBJ)
 	$(CC) -o $@ $^ $(LIBS) $(LFLAG)
-	patchelf --set-rpath /home/zeta/Programming/libtorch/lib $@
+	patchelf --set-rpath /home/zeta/Cloned/libtorch/lib $@
 
 ../catch.x : catch.tx $(OBJ) $(TST)
 	$(CC) -o $@ $^ $(LIBS) $(LFLAG)
