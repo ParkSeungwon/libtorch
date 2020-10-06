@@ -45,3 +45,4 @@ generator-checkpoint.pt
 generator-optimizer-checkpoint.pt
 obj/catch.tx
 discriminator-optimizer-checkpoint.pt
+libtorch-shared-with-deps-latest.zip
